@@ -3,15 +3,15 @@ import { useQuery } from "@apollo/client";
 import { GET_ALL_EPISODES } from "../gql";
 
 const AllEpisodes = () => {
-   const [pageNo, setPageNo] = useState(1);
-   const hasNextPage = true;
+   const [pageNo, setPageNo] = useState({ page: 1, maxPage: Infinity });
    const { called, loading, data } = useQuery(GET_ALL_EPISODES, {
-      variables: { page: pageNo },
+      variables: { page: pageNo.page },
    });
 
    useEffect(() => {
-      if (data?.episodes.info.next === null) hasNextPage = false;
-   }, [called]);
+      if (data?.episodes.info.pages)
+         setPageNo({ ...pageNo, maxPage: data.episodes.info.pages });
+   }, []);
 
    return (
       <div>
@@ -23,13 +23,21 @@ const AllEpisodes = () => {
             ))}
          </ul>
          <div className="d-flex">
-            {pageNo > 1 && (
-               <button onClick={() => setPageNo((prev) => prev - 1)}>
+            {pageNo.page > 1 && (
+               <button
+                  onClick={() =>
+                     setPageNo({ ...pageNo, page: pageNo.page - 1 })
+                  }
+               >
                   prev
                </button>
             )}
-            {hasNextPage && (
-               <button onClick={() => setPageNo((prev) => prev + 1)}>
+            {pageNo.page < pageNo.maxPage && (
+               <button
+                  onClick={() =>
+                     setPageNo({ ...pageNo, page: pageNo.page + 1 })
+                  }
+               >
                   next
                </button>
             )}
