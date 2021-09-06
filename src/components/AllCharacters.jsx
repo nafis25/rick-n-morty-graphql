@@ -4,7 +4,12 @@ import { GET_ALL_CHARACTERS } from "../gql";
 import { useHistory } from "react-router";
 
 const AllCharacters = () => {
-   const [pageNo, setPageNo] = useState({ page: 1, maxPage: Infinity });
+   let currentPage = localStorage.getItem("charPage");
+
+   const [pageNo, setPageNo] = useState({
+      page: currentPage ? parseInt(currentPage) : 1,
+      maxPage: Infinity,
+   });
    const { called, loading, data } = useQuery(GET_ALL_CHARACTERS, {
       variables: { page: pageNo.page },
    });
@@ -15,6 +20,10 @@ const AllCharacters = () => {
       if (data?.characters.info.pages)
          setPageNo({ ...pageNo, maxPage: data.characters.info.pages });
    }, [loading]);
+
+   useEffect(() => {
+      localStorage.setItem("charPage", pageNo.page);
+   });
 
    return (
       <div>

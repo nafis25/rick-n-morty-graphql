@@ -4,7 +4,12 @@ import { GET_ALL_LOCATIONS } from "../gql";
 import { useHistory } from "react-router-dom";
 
 const AllLocations = () => {
-   const [pageNo, setPageNo] = useState({ page: 1, maxPage: Infinity });
+   let currentPage = localStorage.getItem("locPage");
+
+   const [pageNo, setPageNo] = useState({
+      page: currentPage ? parseInt(currentPage) : 1,
+      maxPage: Infinity,
+   });
    const { called, loading, data } = useQuery(GET_ALL_LOCATIONS, {
       variables: { page: pageNo.page },
    });
@@ -15,6 +20,10 @@ const AllLocations = () => {
       if (data?.locations.info.pages)
          setPageNo({ ...pageNo, maxPage: data.locations.info.pages });
    }, [loading]);
+
+   useEffect(() => {
+      localStorage.setItem("locPage", pageNo.page);
+   });
 
    return (
       <div>

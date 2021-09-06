@@ -4,7 +4,12 @@ import { GET_ALL_EPISODES } from "../gql";
 import { useHistory } from "react-router-dom";
 
 const AllEpisodes = () => {
-   const [pageNo, setPageNo] = useState({ page: 1, maxPage: Infinity });
+   let currentPage = localStorage.getItem("epPage");
+
+   const [pageNo, setPageNo] = useState({
+      page: currentPage ? parseInt(currentPage) : 1,
+      maxPage: Infinity,
+   });
    const { called, loading, data } = useQuery(GET_ALL_EPISODES, {
       variables: { page: pageNo.page },
    });
@@ -15,6 +20,10 @@ const AllEpisodes = () => {
       if (data?.episodes.info.pages)
          setPageNo({ ...pageNo, maxPage: data.episodes.info.pages });
    }, [loading]);
+
+   useEffect(() => {
+      localStorage.setItem("epPage", pageNo.page);
+   });
 
    return (
       <div>
