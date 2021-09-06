@@ -1,9 +1,22 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
+import { GET_LOCATION } from "../gql";
 
-const Location = () => {
+const Location = ({ match }) => {
+   const { id } = match.params;
+
+   const {
+      called,
+      loading,
+      data = {},
+   } = useQuery(GET_LOCATION, {
+      variables: { id },
+   });
+
    return (
       <div>
-         <h1>single location</h1>
+         {called && loading && <p>Loading ...</p>}
+         <h1>{data.location?.name}</h1>
       </div>
    );
 };

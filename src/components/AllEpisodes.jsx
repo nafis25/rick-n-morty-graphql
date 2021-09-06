@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_ALL_EPISODES } from "../gql";
+import { useHistory } from "react-router-dom";
 
 const AllEpisodes = () => {
    const [pageNo, setPageNo] = useState({ page: 1, maxPage: Infinity });
@@ -8,10 +9,12 @@ const AllEpisodes = () => {
       variables: { page: pageNo.page },
    });
 
+   const history = useHistory();
+
    useEffect(() => {
       if (data?.episodes.info.pages)
          setPageNo({ ...pageNo, maxPage: data.episodes.info.pages });
-   }, []);
+   }, [loading]);
 
    return (
       <div>
@@ -19,7 +22,15 @@ const AllEpisodes = () => {
          {called && loading && <p>Loading ...</p>}
          <ul>
             {data?.episodes.results.map((episode) => (
-               <li key={episode.name}>{episode.name}</li>
+               <li
+                  key={episode.id}
+                  onClick={(e) => {
+                     e.preventDefault();
+                     history.push(`/episode/${episode.id}`);
+                  }}
+               >
+                  {episode.name}
+               </li>
             ))}
          </ul>
          <div className="d-flex">

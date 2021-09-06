@@ -1,9 +1,22 @@
 import React from "react";
+import { useQuery } from "@apollo/client";
+import { GET_CHARACTER } from "../gql";
 
-const Character = () => {
+const Character = ({ match }) => {
+   const { id } = match.params;
+
+   const {
+      called,
+      loading,
+      data = {},
+   } = useQuery(GET_CHARACTER, {
+      variables: { id },
+   });
+
    return (
       <div>
-         <h1>Single charac</h1>
+         {called && loading && <p>Loading ...</p>}
+         <h1>{data.character?.name}</h1>
       </div>
    );
 };

@@ -9,6 +9,7 @@ export const GET_ALL_CHARACTERS = gql`
             next
          }
          results {
+            id
             name
          }
       }
@@ -24,6 +25,7 @@ export const GET_ALL_EPISODES = gql`
             next
          }
          results {
+            id
             name
          }
       }
@@ -39,8 +41,58 @@ export const GET_ALL_LOCATIONS = gql`
             next
          }
          results {
+            id
             name
          }
+      }
+   }
+`;
+
+export const GET_CHARACTER = gql`
+   query getCharacter($id: ID!) {
+      character(id: $id) {
+         name
+         image
+         status
+         species
+         type
+         gender
+         created
+         origin {
+            name
+            type
+            dimension
+            created
+         }
+         location {
+            name
+         }
+         episode {
+            name
+         }
+      }
+   }
+`;
+
+export const GET_EPISODE = gql`
+   query getEpisode($id: ID!) {
+      episode(id: $id) {
+         name
+         air_date
+         characters {
+            name
+         }
+         created
+      }
+   }
+`;
+
+export const GET_LOCATION = gql`
+   query getLocation($id: ID!) {
+      location(id: $id) {
+         name
+         type
+         created
       }
    }
 `;
